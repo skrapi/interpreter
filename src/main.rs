@@ -1,3 +1,4 @@
+#[derive(PartialEq, Debug)]
 enum TokenType {
     Illegal,
     EOF,
@@ -20,7 +21,8 @@ enum TokenType {
 }
 
 fn main() {
-    println!("Hello, world!");
+    println!("Running test");
+    test();
 }
 
 struct Token {
@@ -54,7 +56,12 @@ struct Lexer<'a> {
 
 impl<'a> Lexer<'a> {
     pub fn new(input: &'a str) -> Self {
-        todo!()
+        Self {
+            input,
+            position: 0,
+            read_position: 0,
+            character: char::default(),
+        }
     }
 }
 
@@ -82,35 +89,35 @@ fn test() {
     let expected_output = vec![
         Token {
             token_type: TokenType::Assign,
-            literal: "=".chars(),
+            literal: "=".chars().next().unwrap(),
         },
         Token {
             token_type: TokenType::Plus,
-            literal: "+",
+            literal: "+".chars().next().unwrap(),
         },
         Token {
             token_type: TokenType::LeftParenthesis,
-            literal: "(",
+            literal: "(".chars().next().unwrap(),
         },
         Token {
             token_type: TokenType::RightParenthesis,
-            literal: ")",
+            literal: ")".chars().next().unwrap(),
         },
         Token {
             token_type: TokenType::LeftBrace,
-            literal: "}",
+            literal: "}".chars().next().unwrap(),
         },
         Token {
             token_type: TokenType::RighBrace,
-            literal: "}",
+            literal: "}".chars().next().unwrap(),
         },
         Token {
             token_type: TokenType::Comma,
-            literal: ",",
+            literal: ",".chars().next().unwrap(),
         },
         Token {
             token_type: TokenType::Semicolon,
-            literal: ";",
+            literal: ";".chars().next().unwrap(),
         },
         Token {
             token_type: TokenType::EOF,
@@ -120,7 +127,7 @@ fn test() {
 
     let lexer = Lexer::new(input);
 
-    for (index, token) in lexer.iter().enumerate() {
+    for (index, token) in lexer.enumerate() {
         assert_eq!(token.token_type, expected_output[index].token_type);
         assert_eq!(token.literal, expected_output[index].literal);
     }
