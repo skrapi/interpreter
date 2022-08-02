@@ -32,6 +32,15 @@ struct Token {
     literal: Option<String>,
 }
 
+impl Token {
+    fn new(token_type: TokenType, literal: Option<String>) -> Token {
+        Token {
+            token_type,
+            literal,
+        }
+    }
+}
+
 impl From<Option<char>> for TokenType {
     fn from(character: Option<char>) -> Self {
         match character {
@@ -97,7 +106,7 @@ fn basic_test() {
 
     let expected_output = vec![
         Token {
-            token_type: TokenType::Let,
+            token_type: TokenType::Assign,
             literal: Some('='.to_string()),
         },
         Token {
@@ -156,37 +165,69 @@ x + y;
 let result = add(five, ten);
 ";
     let expected_output = vec![
+        Token::new(TokenType::Let, Some("let".to_string())),
+        Token::new(TokenType::Indentifier, Some("five".to_string())),
+        Token::new(TokenType::Assign, Some("=".to_string())),
+        Token::new(TokenType::Integer, Some("5".to_string())),
         Token {
-            token_type: TokenType::Let,
-            literal: Some('='.to_string()),
+            token_type: TokenType::Semicolon,
+            literal: Some(";".to_string()),
         },
         Token {
-            token_type: TokenType::Plus,
-            literal: Some('+'.to_string()),
+            token_type: TokenType::Let,
+            literal: Some("let".to_string()),
+        },
+        Token {
+            token_type: TokenType::Indentifier,
+            literal: Some("ten".to_string()),
+        },
+        Token {
+            token_type: TokenType::Assign,
+            literal: Some("=".to_string()),
+        },
+        Token {
+            token_type: TokenType::Integer,
+            literal: Some("10".to_string()),
+        },
+        Token {
+            token_type: TokenType::Semicolon,
+            literal: Some(";".to_string()),
+        },
+        Token {
+            token_type: TokenType::Let,
+            literal: Some("let".to_string()),
+        },
+        Token {
+            token_type: TokenType::Indentifier,
+            literal: Some("add".to_string()),
+        },
+        Token {
+            token_type: TokenType::Assign,
+            literal: Some("=".to_string()),
+        },
+        Token {
+            token_type: TokenType::Function,
+            literal: Some("fn".to_string()),
         },
         Token {
             token_type: TokenType::LeftParenthesis,
-            literal: Some('('.to_string()),
+            literal: Some("(".to_string()),
         },
         Token {
-            token_type: TokenType::RightParenthesis,
-            literal: Some(')'.to_string()),
-        },
-        Token {
-            token_type: TokenType::LeftBrace,
-            literal: Some('{'.to_string()),
-        },
-        Token {
-            token_type: TokenType::RighBrace,
-            literal: Some('}'.to_string()),
+            token_type: TokenType::Indentifier,
+            literal: Some("x".to_string()),
         },
         Token {
             token_type: TokenType::Comma,
             literal: Some(','.to_string()),
         },
         Token {
-            token_type: TokenType::Semicolon,
-            literal: Some(';'.to_string()),
+            token_type: TokenType::Indentifier,
+            literal: Some("y".to_string()),
+        },
+        Token {
+            token_type: TokenType::RightParenthesis,
+            literal: Some(")".to_string()),
         },
         Token {
             token_type: TokenType::EOF,
