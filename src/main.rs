@@ -25,110 +25,121 @@ fn main() {
     test();
 }
 
+#[derive(Debug)]
 struct Token {
     token_type: TokenType,
-    literal: char,
+    literal: Option<char>,
 }
 
-impl From<char> for TokenType {
-    fn from(character: char) -> Self {
-        match character.to_string().as_str() {
-            "=" => TokenType::Assign,
-            "+" => TokenType::Plus,
-            "(" => TokenType::LeftParenthesis,
-            ")" => TokenType::RightParenthesis,
-            "{" => TokenType::LeftBrace,
-            "}" => TokenType::RighBrace,
-            "," => TokenType::Comma,
-            ";" => TokenType::Semicolon,
-            "" => TokenType::EOF,
-            _ => TokenType::Illegal,
+impl From<Option<char>> for TokenType {
+    fn from(character: Option<char>) -> Self {
+        match character {
+            Some(char) => match char {
+                '=' => TokenType::Assign,
+                '+' => TokenType::Plus,
+                '(' => TokenType::LeftParenthesis,
+                ')' => TokenType::RightParenthesis,
+                '{' => TokenType::LeftBrace,
+                '}' => TokenType::RighBrace,
+                ',' => TokenType::Comma,
+                ';' => TokenType::Semicolon,
+                _ => TokenType::Illegal,
+            },
+            None => TokenType::EOF,
         }
     }
 }
 
-struct Lexer<'a> {
-    input: &'a str,
+struct Lexer {
+    input: String,
     position: usize,
     read_position: usize,
-    character: char,
+    character: Option<char>,
 }
 
-impl<'a> Lexer<'a> {
-    pub fn new(input: &'a str) -> Self {
+impl Lexer {
+    pub fn new(input: String) -> Self {
         Self {
             input,
             position: 0,
             read_position: 0,
-            character: char::default(),
+            character: None,
         }
     }
 }
 
-impl<'a> Iterator for Lexer<'a> {
+impl Iterator for Lexer {
     type Item = Token;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.read_position >= self.input.len() {
-            self.character = char::from_u32(0).unwrap();
+            self.character = None;
         } else {
-            self.character = self.input.chars().nth(self.read_position).unwrap();
+            self.character = Some(self.input.chars().nth(self.read_position).unwrap());
         }
 
         self.position = self.read_position;
         self.read_position += 1;
-        Some(Token {
-            token_type: self.character.into(),
-            literal: self.character,
-        })
+
+        match self.position >= self.input.len() {
+            true => None,
+            false => Some(Token {
+                token_type: self.character.into(),
+                literal: self.character,
+            }),
+        }
     }
 }
+
 fn test() {
     let input = "=+(){},;";
 
     let expected_output = vec![
         Token {
             token_type: TokenType::Assign,
-            literal: "=".chars().next().unwrap(),
+            literal: Some('='),
         },
         Token {
             token_type: TokenType::Plus,
-            literal: "+".chars().next().unwrap(),
+            literal: Some('+'),
         },
         Token {
             token_type: TokenType::LeftParenthesis,
-            literal: "(".chars().next().unwrap(),
+            literal: Some('('),
         },
         Token {
             token_type: TokenType::RightParenthesis,
-            literal: ")".chars().next().unwrap(),
+            literal: Some(')'),
         },
         Token {
             token_type: TokenType::LeftBrace,
-            literal: "}".chars().next().unwrap(),
+            literal: Some('{'),
         },
         Token {
             token_type: TokenType::RighBrace,
-            literal: "}".chars().next().unwrap(),
+            literal: Some('}'),
         },
         Token {
             token_type: TokenType::Comma,
-            literal: ",".chars().next().unwrap(),
+            literal: Some(','),
         },
         Token {
             token_type: TokenType::Semicolon,
-            literal: ";".chars().next().unwrap(),
+            literal: Some(';'),
         },
         Token {
             token_type: TokenType::EOF,
-            literal: "",
+            literal: None,
         },
     ];
 
-    let lexer = Lexer::new(input);
+    let lexer = Lexer::new(input.to_string());
 
     for (index, token) in lexer.enumerate() {
+        println!("{index}, {token:?}");
         assert_eq!(token.token_type, expected_output[index].token_type);
         assert_eq!(token.literal, expected_output[index].literal);
     }
+
+    println!("Success!")
 }
