@@ -41,18 +41,18 @@ impl Token {
     }
 }
 
-impl From<Option<char>> for TokenType {
-    fn from(character: Option<char>) -> Self {
+impl From<Option<&[char]>> for TokenType {
+    fn from(character: Option<&[char]>) -> Self {
         match character {
             Some(char) => match char {
-                '=' => TokenType::Assign,
-                '+' => TokenType::Plus,
-                '(' => TokenType::LeftParenthesis,
-                ')' => TokenType::RightParenthesis,
-                '{' => TokenType::LeftBrace,
-                '}' => TokenType::RighBrace,
-                ',' => TokenType::Comma,
-                ';' => TokenType::Semicolon,
+                &['='] => TokenType::Assign,
+                &['+'] => TokenType::Plus,
+                &['('] => TokenType::LeftParenthesis,
+                &[')'] => TokenType::RightParenthesis,
+                &['{'] => TokenType::LeftBrace,
+                &['}'] => TokenType::RighBrace,
+                &[','] => TokenType::Comma,
+                &[';'] => TokenType::Semicolon,
                 _ => TokenType::Illegal,
             },
             None => TokenType::EOF,
@@ -86,6 +86,13 @@ impl Iterator for Lexer {
             self.character = None;
         } else {
             self.character = Some(self.input.chars().nth(self.read_position).unwrap());
+        }
+
+        if self
+            .character
+            .is_some_and(|character| character.is_alphabetic())
+        {
+            todo!()
         }
 
         self.position = self.read_position;
