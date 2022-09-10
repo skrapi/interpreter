@@ -105,42 +105,15 @@ fn basic_test() {
     let input = "=+(){},;";
 
     let expected_output = vec![
-        Token {
-            token_type: TokenType::Assign,
-            literal: Some('='.to_string()),
-        },
-        Token {
-            token_type: TokenType::Plus,
-            literal: Some('+'.to_string()),
-        },
-        Token {
-            token_type: TokenType::LeftParenthesis,
-            literal: Some('('.to_string()),
-        },
-        Token {
-            token_type: TokenType::RightParenthesis,
-            literal: Some(')'.to_string()),
-        },
-        Token {
-            token_type: TokenType::LeftBrace,
-            literal: Some('{'.to_string()),
-        },
-        Token {
-            token_type: TokenType::RighBrace,
-            literal: Some('}'.to_string()),
-        },
-        Token {
-            token_type: TokenType::Comma,
-            literal: Some(','.to_string()),
-        },
-        Token {
-            token_type: TokenType::Semicolon,
-            literal: Some(';'.to_string()),
-        },
-        Token {
-            token_type: TokenType::EOF,
-            literal: None,
-        },
+        Token::new(TokenType::Assign, Some('='.to_string())),
+        Token::new(TokenType::Plus, Some('+'.to_string())),
+        Token::new(TokenType::LeftParenthesis, Some('('.to_string())),
+        Token::new(TokenType::RightParenthesis, Some(')'.to_string())),
+        Token::new(TokenType::LeftBrace, Some('{'.to_string())),
+        Token::new(TokenType::RighBrace, Some('}'.to_string())),
+        Token::new(TokenType::Comma, Some(','.to_string())),
+        Token::new(TokenType::Semicolon, Some(';'.to_string())),
+        Token::new(TokenType::EOF, None),
     ];
 
     let lexer = Lexer::new(input.to_string());
@@ -169,70 +142,22 @@ let result = add(five, ten);
         Token::new(TokenType::Indentifier, Some("five".to_string())),
         Token::new(TokenType::Assign, Some("=".to_string())),
         Token::new(TokenType::Integer, Some("5".to_string())),
-        Token {
-            token_type: TokenType::Semicolon,
-            literal: Some(";".to_string()),
-        },
-        Token {
-            token_type: TokenType::Let,
-            literal: Some("let".to_string()),
-        },
-        Token {
-            token_type: TokenType::Indentifier,
-            literal: Some("ten".to_string()),
-        },
-        Token {
-            token_type: TokenType::Assign,
-            literal: Some("=".to_string()),
-        },
-        Token {
-            token_type: TokenType::Integer,
-            literal: Some("10".to_string()),
-        },
-        Token {
-            token_type: TokenType::Semicolon,
-            literal: Some(";".to_string()),
-        },
-        Token {
-            token_type: TokenType::Let,
-            literal: Some("let".to_string()),
-        },
-        Token {
-            token_type: TokenType::Indentifier,
-            literal: Some("add".to_string()),
-        },
-        Token {
-            token_type: TokenType::Assign,
-            literal: Some("=".to_string()),
-        },
-        Token {
-            token_type: TokenType::Function,
-            literal: Some("fn".to_string()),
-        },
-        Token {
-            token_type: TokenType::LeftParenthesis,
-            literal: Some("(".to_string()),
-        },
-        Token {
-            token_type: TokenType::Indentifier,
-            literal: Some("x".to_string()),
-        },
-        Token {
-            token_type: TokenType::Comma,
-            literal: Some(','.to_string()),
-        },
-        Token {
-            token_type: TokenType::Indentifier,
-            literal: Some("y".to_string()),
-        },
-        Token {
-            token_type: TokenType::RightParenthesis,
-            literal: Some(")".to_string()),
-        },
-        Token {
-            token_type: TokenType::EOF,
-            literal: None,
-        },
+        Token::new(TokenType::Semicolon, Some(";".to_string())),
+        Token::new(TokenType::Let, Some("let".to_string())),
+        Token::new(TokenType::Indentifier, Some("ten".to_string())),
+        Token::new(TokenType::Assign, Some("=".to_string())),
+        Token::new(TokenType::Integer, Some("10".to_string())),
+        Token::new(TokenType::Semicolon, Some(";".to_string())),
+        Token::new(TokenType::Let, Some("let".to_string())),
+        Token::new(TokenType::Indentifier, Some("add".to_string())),
+        Token::new(TokenType::Assign, Some("=".to_string())),
+        Token::new(TokenType::Function, Some("fn".to_string())),
+        Token::new(TokenType::LeftParenthesis, Some("(".to_string())),
+        Token::new(TokenType::Indentifier, Some("x".to_string())),
+        Token::new(TokenType::Comma, Some(','.to_string())),
+        Token::new(TokenType::Indentifier, Some("y".to_string())),
+        Token::new(TokenType::RightParenthesis, Some(")".to_string())),
+        Token::new(TokenType::EOF, None),
     ];
 
     let lexer = Lexer::new(input.to_string());
