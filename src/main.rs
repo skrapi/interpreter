@@ -41,19 +41,30 @@ impl Token {
     }
 }
 
-impl From<Option<&[char]>> for TokenType {
-    fn from(character: Option<&[char]>) -> Self {
-        match character {
-            Some(char) => match char {
-                &['='] => TokenType::Assign,
-                &['+'] => TokenType::Plus,
-                &['('] => TokenType::LeftParenthesis,
-                &[')'] => TokenType::RightParenthesis,
-                &['{'] => TokenType::LeftBrace,
-                &['}'] => TokenType::RighBrace,
-                &[','] => TokenType::Comma,
-                &[';'] => TokenType::Semicolon,
-                _ => TokenType::Illegal,
+impl From<Option<&str>> for TokenType {
+    fn from(value: Option<&str>) -> Self {
+        match value {
+            Some(value) => match value {
+                "=" => TokenType::Assign,
+                "+" => TokenType::Plus,
+                "(" => TokenType::LeftParenthesis,
+                ")" => TokenType::RightParenthesis,
+                "{" => TokenType::LeftBrace,
+                "}" => TokenType::RighBrace,
+                "," => TokenType::Comma,
+                ";" => TokenType::Semicolon,
+                "fn" => TokenType::Function,
+                "let" => TokenType::Let,
+                _ => {
+                    if value
+                        .chars()
+                        .all(|char| char.is_alphabetic() || char == '_')
+                    {
+                        TokenType::Indentifier
+                    } else {
+                        TokenType::Illegal
+                    }
+                }
             },
             None => TokenType::EOF,
         }
@@ -62,18 +73,16 @@ impl From<Option<&[char]>> for TokenType {
 
 struct Lexer {
     input: String,
-    position: usize,
+    start_of_current_token: usize,
     read_position: usize,
-    character: Option<char>,
 }
 
 impl Lexer {
     pub fn new(input: String) -> Self {
         Self {
             input,
-            position: 0,
+            start_of_current_token: 0,
             read_position: 0,
-            character: None,
         }
     }
 }
@@ -82,27 +91,41 @@ impl Iterator for Lexer {
     type Item = Token;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.read_position >= self.input.len() {
-            self.character = None;
-        } else {
-            self.character = Some(self.input.chars().nth(self.read_position).unwrap());
-        }
-
-        if self
-            .character
-            .is_some_and(|character| character.is_alphabetic())
-        {
-            todo!()
-        }
-
-        self.position = self.read_position;
+        let mut token_literal = None;
+        self.start_of_current_token = self.read_position;
         self.read_position += 1;
 
-        match self.position >= self.input.len() {
+        if self.read_position >= self.input.len() {
+            token_literal = None;
+        } else {
+            while self.read_position < self.input.len()
+                && self
+                    .input
+                    .chars()
+                    .nth(self.read_position)
+                    .unwrap()
+                    .is_alphabetic()
+            {
+                println!("{}", self.read_position);
+                self.read_position += 1;
+            }
+
+            token_literal = Some(
+                &self.input[self
+                    .input
+                    .char_indices()
+                    .nth(self.start_of_current_token)
+                    .unwrap()
+                    .0
+                    ..self.input.char_indices().nth(self.read_position).unwrap().0],
+            );
+        }
+
+        match self.start_of_current_token >= self.input.len() {
             true => None,
             false => Some(Token {
-                token_type: self.character.into(),
-                literal: Some(self.character.unwrap().to_string()),
+                token_type: token_literal.into(),
+                literal: Some(token_literal.unwrap().to_string()),
             }),
         }
     }
